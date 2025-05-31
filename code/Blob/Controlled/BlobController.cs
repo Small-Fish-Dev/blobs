@@ -44,7 +44,7 @@ public sealed partial class BlobController
 		Zoom = ZoomRange.Max - ZoomRange.Min;
 		SmoothZoom = Zoom;
 	}
-	
+
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();

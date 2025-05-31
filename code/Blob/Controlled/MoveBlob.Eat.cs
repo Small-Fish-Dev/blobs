@@ -53,6 +53,21 @@ partial class MoveBlob
 		if ( !other.IsValid() ) return;
 		if ( !CanEat( other ) ) return;
 
+		// Replace values of the base blob controller with this blob.
+		// Only if we are a valid sibling etc..
+		if ( other.Controller.IsValid() 
+		  && other.Controller.Base == other
+		  && other.Controller.Siblings.Contains( this ) )
+		{
+			other.Size = Size + other.Size;
+			other.WorldPosition = WorldPosition;
+			other.Transform.ClearInterpolation();
+
+			Kill();
+
+			return;
+		}
+
 		Size += other.Size;
 		other.Kill();
 	}
