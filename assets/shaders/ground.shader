@@ -70,7 +70,7 @@ PS
 		oob = max(min(oob, 1), 0);
 
         float4 groundColor = g_tGroundRepeatTexture.Sample( g_sSampler, worldPosition.xy / (1.f / SCALE) ).rgba;
-		float3 result = lerp(groundColor.rgb, (groundColor.rgb + VOID_COLOR) * 0.5f, 1.f - oob);
+		float3 result = lerp(groundColor.rgb, groundColor.rgb * VOID_COLOR, 1.f - oob);
 		return float4( result.rgb, 1.f );
 	}
 }

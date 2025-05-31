@@ -8,7 +8,7 @@ partial class BlobController
 	public const float SPLIT_FRACTION = 0.4f;
 
 	public int TotalSize => ValidSiblings.Sum( sibling => sibling.Size );
-	public IEnumerable<MoveBlob> ValidSiblings => [..Siblings.Where( blob => blob.IsValid() ), Main];
+	public IEnumerable<MoveBlob> ValidSiblings => Siblings.Where( blob => blob.IsValid() );
 
 	[Sync( SyncFlags.FromHost )]
 	public NetList<MoveBlob> Siblings { get; set; } = new();
@@ -48,6 +48,9 @@ partial class BlobController
 
 				if ( child.Size < MIN_SIZE )
 					continue;
+
+				if ( ValidSiblings.Count() >= MAX_SIBLINGS )
+					break;
 
 				var size = (int)(child.Size * SPLIT_FRACTION + 0.5f);
 				child.Size -= size;

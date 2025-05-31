@@ -6,8 +6,10 @@ public sealed partial class BlobController
 	[Property, Category( "Components" )]
 	public CameraComponent Camera { get; set; }
 
+	public MoveBlob Main => ValidSiblings.MaxBy( blob => blob.SmoothSize ) ?? Base;
+
 	[Property, Category( "Components" )]
-	public MoveBlob Main { get; set; }
+	public MoveBlob Base { get; set; }
 
 	[Property, Category( "Settings" )]
 	public RangedFloat ZoomRange { get; set; } = new RangedFloat( 250f, 750f );
@@ -30,8 +32,11 @@ public sealed partial class BlobController
 		if ( Camera.IsValid() )
 			Camera.Enabled = !IsProxy;
 
-		if ( Main.IsValid() )
-			Main.Controller = this;
+		if ( Base.IsValid() )
+		{
+			Base.Controller = this;
+			Siblings.Add( Base );
+		}
 
 		if ( !IsProxy )
 			return;
@@ -44,7 +49,7 @@ public sealed partial class BlobController
 	{
 		base.OnUpdate();
 
-		if ( !Main.IsValid() )
+		if ( !Main.IsValid() || IsProxy )
 			return;
 
 		// Interpolate some values, "zoom out" our camera.
@@ -54,7 +59,11 @@ public sealed partial class BlobController
 		SmoothZoom = MathX.Lerp( SmoothZoom, Zoom, 10f * RealTime.Delta );
 
 		if ( Camera.IsValid() )
+		{
+			var pos = Camera.WorldPosition.z;
 			Camera.OrthographicHeight = Main.SmoothSize * 2f + SmoothZoom / ZoomRange.Max * before * ZoomScale + DefaultDistance;
+			Camera.WorldPosition = Vector3.Lerp( Camera.WorldPosition, Main.WorldPosition.WithZ( pos ), 10f * Time.Delta );
+		}
 
 		// Wish direction is from mouse, centered on screen.
 		var dir = (Mouse.Position / Screen.Size * 2f - 1f)
