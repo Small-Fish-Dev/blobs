@@ -1,0 +1,128 @@
+{
+  "RootObject": {
+    "__guid": "dd8d6b42-126e-4324-bb73-1a4da22b985d",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "blob",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "Blobs.BlobController",
+        "__guid": "de3bd1d7-942c-42fe-ad97-d3919a5d91de",
+        "__enabled": true,
+        "Camera": {
+          "_type": "component",
+          "component_id": "723c6b4a-8586-403f-9f2e-1717c127f1c9",
+          "go": "eafe74d8-fb01-40e9-a9ec-af453d3be456",
+          "component_type": "CameraComponent"
+        },
+        "DefaultDistance": 15,
+        "Main": {
+          "_type": "component",
+          "component_id": "654d2781-fbd9-47db-9ab0-b09039abe550",
+          "go": "dd8d6b42-126e-4324-bb73-1a4da22b985d",
+          "component_type": "MoveBlob"
+        },
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "ZoomRange": "800 3800",
+        "ZoomScale": 2.85
+      },
+      {
+        "__type": "Blobs.MoveBlob",
+        "__guid": "654d2781-fbd9-47db-9ab0-b09039abe550",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Size": 100
+      }
+    ],
+    "Children": [
+      {
+        "__guid": "eafe74d8-fb01-40e9-a9ec-af453d3be456",
+        "__version": 1,
+        "Flags": 0,
+        "Name": "Camera",
+        "Position": "0,0,9000",
+        "Rotation": "-0.5,0.5,0.5,0.5",
+        "Scale": "1,1,1",
+        "Tags": "",
+        "Enabled": true,
+        "NetworkMode": 2,
+        "NetworkInterpolation": true,
+        "NetworkOrphaned": 0,
+        "OwnerTransfer": 1,
+        "Components": [
+          {
+            "__type": "Sandbox.CameraComponent",
+            "__guid": "723c6b4a-8586-403f-9f2e-1717c127f1c9",
+            "__enabled": true,
+            "BackgroundColor": "0.33333,0.46275,0.52157,1",
+            "ClearFlags": "All",
+            "FieldOfView": 60,
+            "FovAxis": "Horizontal",
+            "IsMainCamera": true,
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "Orthographic": true,
+            "OrthographicHeight": 512,
+            "Priority": 1,
+            "RenderExcludeTags": "",
+            "RenderTags": "",
+            "TargetEye": "None",
+            "Viewport": "0,0,1,1",
+            "ZFar": 10000,
+            "ZNear": 10
+          }
+        ],
+        "Children": []
+      }
+    ],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}
