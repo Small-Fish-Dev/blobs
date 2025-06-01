@@ -1,33 +1,33 @@
 ﻿namespace Blobs;
 
-partial class MoveBlob
+partial class EdibleBlob
 {
 	private class Renderer
 		: SceneCustomObject
 	{
-		const int POINTS = 24;
+		const int POINTS = 12;
 
 		const int VERTICES = POINTS + 1;
 		const int INDICES = VERTICES * 3;
 
-		private MoveBlob Blob { get; }
+		private EdibleBlob Blob { get; }
 		private TimeSince TimeOffset { get; }
 
 		private Vertex[] Vertices { get; }
 		private ushort[] Indices { get; }
 
-		public Renderer( MoveBlob blob, SceneWorld sceneWorld ) : base( sceneWorld ) 
-		{ 
+		public Renderer( EdibleBlob blob, SceneWorld sceneWorld ) : base( sceneWorld )
+		{
 			Blob = blob;
 			TimeOffset = Game.Random.Float( -999f, 999f );
-			
+
 			Vertices = new Vertex[VERTICES];
 			Indices = new ushort[INDICES];
 		}
 
 		public override void RenderSceneObject()
 		{
-			if ( !Blob.IsValid() || (Blob.Controller != Client.Local?.Pawn && !Blob.VisibleToSelf()) )
+			if ( !Blob.IsValid() || !Blob.VisibleToSelf() )
 				return;
 
 			// Draw the blob circle.
@@ -49,9 +49,9 @@ partial class MoveBlob
 				var circle = new Vector3( MathF.Cos( input ), MathF.Sin( input ), 0f );
 
 				var wave = new Vector3(
-					radius * 0.02f * MathF.Sin( i * 4 + time * 2f ), 
-					radius * 0.02f * MathF.Cos( i * 2 + time * 1.2f ), 
-					0f 
+					radius * 0.02f * MathF.Sin( i * 4 + time * 2f ),
+					radius * 0.02f * MathF.Cos( i * 2 + time * 1.2f ),
+					0f
 				);
 
 				var position = (center - radius * circle);
@@ -76,13 +76,10 @@ partial class MoveBlob
 			Indices[INDICES - 3] = 0;
 			Indices[INDICES - 2] = (ushort)(VERTICES - 1);
 			Indices[INDICES - 1] = 1;
-
-			var client = Blob.Controller?.Client;
-			var texture = client?.SteamId == default
-				? Texture.Invalid
-				: Texture.LoadAvatar( client.SteamId );
-
-			Attributes.Set( "AvatarTexture", texture );
+			
+			Attributes.Set( "D_ISSOLID", true );
+			Attributes.Set( "BlobColor", Blob.Color );
+			Attributes.Set( "BlobOutlineSize", 0.25f );
 
 			Graphics.Draw( Vertices, VERTICES, Indices, INDICES, Material.FromShader( "shaders/blob.shader" ), Attributes );
 		}

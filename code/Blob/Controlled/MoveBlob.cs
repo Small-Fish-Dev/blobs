@@ -11,16 +11,12 @@ public sealed partial class MoveBlob
 	[Sync]
 	public BlobController Controller { get; set; }
 
-	public float Speed => MathX.Lerp( SPEED_SMALL, SPEED_LARGE, (Size * 8f) / (float)MAX_SIZE );
-	public Vector2 Velocity { get; set; }
-	public TimeSince LifeTime { get; set; }
+	public float Speed => MathX.Lerp( SPEED_SMALL, SPEED_LARGE, (Size * 8f) / (float)MAX_SIZE ) + (Controller?.Main != this ? 0.5f : 0f);
 	public bool Reconnecting => Controller.Main != this && Controller.Main.IsValid() && LifeTime > RECONNECTION_COOLDOWN;
 
 	protected override void OnStart()
 	{
 		base.OnStart();
-
-		LifeTime = 0f;
 
 		if ( !SceneObject.IsValid() )
 			SceneObject = new Renderer( this, Scene?.SceneWorld );
@@ -100,23 +96,6 @@ public sealed partial class MoveBlob
 
 		// Move the blob.
 		var bounds = GameManager.Bounds;
-		WorldPosition = (WorldPosition + (Controller.WishDirection.Extrude() * Speed + Velocity.Extrude()) * Time.Delta).WithZ( 0f );
-		WorldPosition = WorldPosition.Clamp( bounds.Mins, bounds.Maxs );
-
-		// Velocity fall-off..
-		Velocity *= 0.95f;
-		if ( Velocity.IsNearZeroLength )
-			Velocity = Vector2.Zero;
-
-		// Bounce off of bounds.
-		var velocity = Velocity;
-		var nextPosition = WorldPosition + Velocity.Extrude() * Time.Delta;
-		if ( nextPosition.x <= bounds.Mins.x || nextPosition.x >= bounds.Maxs.x )
-			velocity.x *= -0.75f;
-
-		if ( nextPosition.y <= bounds.Mins.y || nextPosition.y >= bounds.Maxs.y )
-			velocity.y *= -0.75f;
-
-		Velocity = velocity;
+		WorldPosition = (WorldPosition + Controller.WishDirection.Extrude() * Speed * Time.Delta).WithZ( 0f ).Clamp( bounds.Mins, bounds.Maxs );
 	}
 }

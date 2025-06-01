@@ -5,30 +5,40 @@ partial class MoveBlob
 	const float EAT_MIN = 50f; // A minimum size threshold for eating another blob.
 	const float EAT_THRESHOLD = 0.15f; // How much bigger we need to be to eat a blob.
 	const float EAT_RADIUS = 0.9f; // How much we need to be inside of the blob to eat it.
-	
+
+	const float FEED_EAT_DELAY = 4f;
+
 	public bool CanEat( Blob blob )
 	{
-		if ( blob is not MoveBlob other )
-			return false;
-
 		// Other blob isn't valid.
-		if ( !other.IsValid() ) return false;
+		if ( !blob.IsValid() ) return false;
 
-		// Other blob is related to this one.
-		var reconnecting = false;
-		if ( other == this || other.Controller == Controller )
+		// Blob is another move blob.
+		if ( blob is MoveBlob other )
 		{
-			if ( !other.Reconnecting )
-				return false;
+			// Other blob is related to this one.
+			var reconnecting = false;
+			if ( other == this || other.Controller == Controller )
+			{
+				if ( !other.Reconnecting )
+					return false;
 
-			reconnecting = true;
+				reconnecting = true;
+			}
+
+			// Blob isn't big enough to eat the other.
+			if ( !reconnecting && other.Size * (1f + EAT_THRESHOLD) + EAT_MIN >= Size ) return false;
 		}
 
-		// Blob isn't big enough to eat the other.
-		if ( !reconnecting && other.Size * (1f + EAT_THRESHOLD) + EAT_MIN >= Size ) return false;
+		// We shout out a edible blob from this blob.
+		else if ( blob is EdibleBlob edible )
+		{
+			if ( edible.Source == this && edible.LifeTime < FEED_EAT_DELAY )
+				return false;
+		}
 
 		// Blob isn't within eating radius.
-		var otherPosition = other.WorldPosition.Flatten();
+		var otherPosition = blob.WorldPosition.Flatten();
 		var position = WorldPosition.Flatten();
 		var distance = otherPosition.Distance( position );
 
@@ -38,25 +48,16 @@ partial class MoveBlob
 		return true;
 	}
 
-	public void Kill()
-	{
-		Assert.True( Networking.IsHost, "Tried to kill blob on non-host." );
-
-		DestroyGameObject();
-	}
-
 	[Rpc.Host( NetFlags.Reliable | NetFlags.OwnerOnly | NetFlags.SendImmediate )]
 	public void TryEat( Blob blob )
 	{
-		if ( blob is not MoveBlob other )
-			return;
-
-		if ( !other.IsValid() ) return;
-		if ( !CanEat( other ) ) return;
+		if ( !blob.IsValid() ) return;
+		if ( !CanEat( blob ) ) return;
 
 		// Replace values of the base blob controller with this blob.
 		// Only if we are a valid sibling etc..
-		if ( other.Controller.IsValid() 
+		if ( blob is MoveBlob other 
+		  && other.Controller.IsValid() 
 		  && other.Controller.Base == other
 		  && other.Controller.Siblings.Contains( this ) )
 		{
@@ -71,7 +72,7 @@ partial class MoveBlob
 			return;
 		}
 
-		Size += other.Size;
-		other.Kill();
+		Size += blob.Size;
+		blob.Kill();
 	}
 }

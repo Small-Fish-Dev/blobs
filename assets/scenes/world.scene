@@ -70,6 +70,19 @@
           }
         },
         {
+          "__type": "Blobs.FoodSpawner",
+          "__guid": "1b165f4e-bdda-4974-99fd-a7aa3c26677f",
+          "__enabled": true,
+          "FoodSizeRange": "4 15",
+          "MaxFood": 500,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        },
+        {
           "__type": "Sandbox.ScreenPanel",
           "__guid": "b61a2d20-f35d-4ed5-9206-86d80fa9a6c2",
           "__enabled": true,

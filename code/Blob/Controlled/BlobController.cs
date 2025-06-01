@@ -23,7 +23,10 @@ public sealed partial class BlobController
 	public float Zoom { get; set; }
 	public float SmoothZoom { get; private set; }
 	public Vector2 WishDirection { get; private set; }
-	public Vector2 MouseNormal { get; private set; }
+
+	[Sync]
+	public Vector2 MouseDirection { get; set; }
+	public Vector2 MouseNormal => MouseDirection.Normal;
 
 	protected override void OnStart()
 	{
@@ -66,15 +69,20 @@ public sealed partial class BlobController
 		}
 
 		// Wish direction is from mouse, centered on screen.
-		var dir = (Mouse.Position / Screen.Size * 2f - 1f)
-			.Clamp( -1, 1 );
+		var center = Screen.Size * 0.5f;
+		var mouse = Mouse.Position;
+		var dir = mouse - center;
 		dir.y = -dir.y;
 
-		MouseNormal = dir.Normal;
-		WishDirection = (dir * 8).Clamp( -1, 1 );
+		MouseDirection = dir;
+		WishDirection = (dir / center * 8).Clamp( -1f, 1f );
 
 		// Split if possible.
-		if ( Input.Pressed( "Jump" ) )
+		if ( Input.Pressed( "Split" ) )
 			TrySplit( ValidSiblings.ToArray() );
+
+		// Feed if possible.
+		if ( Input.Pressed( "Feed" ) )
+			TryFeed( ValidSiblings.ToArray() );
 	}
 }

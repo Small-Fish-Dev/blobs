@@ -2,15 +2,23 @@
 @inherits Panel
 
 <root>
-	@($"{Count:n0}")
+	<p>score</p>
+	<p>@($"{(_lerpCount.CeilToInt()):n0}")</p>
 </root>
 
 @code {
 	private BlobController Controller => Client.Local.IsValid() ? Client.Local.Pawn as BlobController : null;
-	private int Count => Controller?.TotalSize ?? 0;
+	private float _lerpCount = 0;
+
+	public override void Tick()
+	{
+		base.Tick();
+
+		_lerpCount = MathX.Lerp( _lerpCount, Controller?.TotalSize ?? 0, 10f * Time.Delta );
+	}
 
 	protected override int BuildHash()
 	{
-		return HashCode.Combine(Count);
+		return HashCode.Combine( _lerpCount.CeilToInt() );
 	}
 }

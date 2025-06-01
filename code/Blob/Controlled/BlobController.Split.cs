@@ -2,8 +2,8 @@
 
 partial class BlobController
 {
-	public const float SPLIT_FORCE = 2.5f;
-	public const float MIN_SIZE = 200f;
+	public const float SPLIT_FORCE = 2.1f;
+	public const int MIN_SIZE = 200;
 	public const int MAX_SIBLINGS = 12;
 	public const float SPLIT_FRACTION = 0.4f;
 
@@ -30,9 +30,9 @@ partial class BlobController
 			var obj = new GameObject( true, "child blob" );
 			
 			var blob = obj.Components.Create<MoveBlob>();
-			blob.WorldPosition = parent.WorldPosition;
-			blob.Velocity = parent.WorldSize * MouseNormal * SPLIT_FORCE;
 			blob.Size = size;
+			blob.WorldPosition = parent.WorldPosition + (MouseNormal * (parent.WorldSize - blob.WorldSize)).Extrude();
+			blob.Velocity = parent.WorldSize * MouseNormal * SPLIT_FORCE;
 			blob.Controller = this;
 			
 			obj.SetupNetworking( Network.Owner, OwnerTransfer.Fixed, NetworkOrphaned.Destroy );
@@ -43,6 +43,9 @@ partial class BlobController
 		using ( Scene.Push() )
 			foreach ( var child in children )
 			{
+				if ( !child.IsValid() )
+					continue;
+
 				if ( child.Controller != this )
 					continue;
 
