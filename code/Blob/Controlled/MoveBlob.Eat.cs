@@ -30,7 +30,7 @@ partial class MoveBlob
 			if ( !reconnecting && other.Size * (1f + EAT_THRESHOLD) + EAT_MIN >= Size ) return false;
 		}
 
-		// We shout out a edible blob from this blob.
+		// We shoot out a edible blob from this blob.
 		else if ( blob is EdibleBlob edible )
 		{
 			if ( edible.Source == this && edible.LifeTime < FEED_EAT_DELAY )
@@ -54,22 +54,27 @@ partial class MoveBlob
 		if ( !blob.IsValid() ) return;
 		if ( !CanEat( blob ) ) return;
 
-		// Replace values of the base blob controller with this blob.
-		// Only if we are a valid sibling etc..
-		if ( blob is MoveBlob other 
-		  && other.Controller.IsValid() 
-		  && other.Controller.Base == other
-		  && other.Controller.Siblings.Contains( this ) )
+		// Our controlled blob was eaten, replace controlled blob with another.
+		if ( blob is MoveBlob moveBlob 
+		  && moveBlob.Controller is { IsValid: true } controller 
+		  && controller.Base == moveBlob )
 		{
-			other.Size = Size + other.Size;
-			other.WorldPosition = WorldPosition;
-			other.Transform.ClearInterpolation();
-			other.LifeTime = 0f;
+			// Pivot to any possible blob if we can.
+			var bestCandidate = controller.ValidSiblings.FirstOrDefault( sibling => sibling.IsValid() && sibling != moveBlob );
+			if ( bestCandidate.IsValid() )
+			{
+				Size += blob.Size;
 
-			LifeTime = 0f;
-			Kill();
+				controller.Transform.ClearInterpolation();
+				controller.WorldPosition = bestCandidate.WorldPosition;
 
-			return;
+				moveBlob.Size = bestCandidate.Size;
+				moveBlob.SmoothSize = bestCandidate.SmoothSize;
+
+				bestCandidate.Kill();
+
+				return;
+			}
 		}
 
 		Size += blob.Size;

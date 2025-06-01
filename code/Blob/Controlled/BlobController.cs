@@ -6,7 +6,7 @@ public sealed partial class BlobController
 	[Property, Category( "Components" )]
 	public CameraComponent Camera { get; set; }
 
-	public MoveBlob Main => ValidSiblings.MaxBy( blob => blob.SmoothSize ) ?? Base;
+	public MoveBlob Main => ValidSiblings.MaxBy( blob => blob?.SmoothSize ?? 0 ) ?? Base;
 
 	[Property, Category( "Components" )]
 	public MoveBlob Base { get; set; }
@@ -28,6 +28,8 @@ public sealed partial class BlobController
 	public Vector2 MouseDirection { get; set; }
 	public Vector2 MouseNormal => MouseDirection.Normal;
 
+	private TimeSince _sinceFed;
+
 	protected override void OnStart()
 	{
 		base.OnStart();
@@ -36,10 +38,7 @@ public sealed partial class BlobController
 			Camera.Enabled = !IsProxy;
 
 		if ( Base.IsValid() )
-		{
 			Base.Controller = this;
-			Siblings.Add( Base );
-		}
 
 		if ( !IsProxy )
 			return;
@@ -78,12 +77,24 @@ public sealed partial class BlobController
 		WishDirection = (dir / center * 8).Clamp( -1f, 1f );
 
 		// Split if possible.
-		if ( Input.Pressed( "Split" ) )
-			TrySplit( ValidSiblings.ToArray() );
+		if ( Input.Pressed( "Split" ) && _sinceFed > 0.1f )
+		{
+			TrySplit( ValidSiblings.ToList() );
+			_sinceFed = 0f;
+		}
 
 		// Feed if possible.
-		if ( Input.Pressed( "Feed" ) )
-			TryFeed( ValidSiblings.ToArray() );
+		if ( Input.Pressed( "Feed" ) && _sinceFed > 0.1f )
+		{
+			TryFeed( ValidSiblings.ToList() );
+			_sinceFed = 0f;
+		}
+	}
+
+	[Rpc.Host]
+	private void GiveFeed( int size )
+	{
+		Main.Size += size;
 	}
 
 	[ConCmd( "give_feed" )]
@@ -92,10 +103,6 @@ public sealed partial class BlobController
 		if ( Client.Local?.Pawn is not BlobController controller )
 			return;
 
-		var main = controller.Main;
-		if ( !main.IsValid() )
-			return;
-
-		main.Size += size;
+		controller.GiveFeed( size );
 	}
 }

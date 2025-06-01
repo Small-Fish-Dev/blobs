@@ -5,7 +5,7 @@ public partial class Blob
 {
 	protected const int MAX_SIZE = 50000;
 
-	[Property, Sync, Category( "Settings" )]
+	[Property, Sync( SyncFlags.FromHost ), Category( "Settings" )]
 	public int Size
 	{
 		get => _size;
@@ -17,9 +17,11 @@ public partial class Blob
 	private int _size = 100;
 
 	public float WorldSize => MathF.Sqrt( Size * 0.1f );
-	public float SmoothSize { get; private set; }
+	public float SmoothSize { get; set; }
 	public SceneObject SceneObject { get; protected set; }
 	public Vector2 Velocity { get; set; }
+
+	[Property, Hide]
 	public TimeSince LifeTime { get; set; }
 
 	protected override void OnStart()
@@ -56,7 +58,7 @@ public partial class Blob
 		var camera = Scene.Camera;
 		if ( !camera.IsValid() ) return false;
 
-		var circleRect = new Rect( WorldPosition.Flatten() - WorldSize * 0.5f, WorldSize );
+		var circleRect = new Rect( WorldPosition.Flatten() - WorldSize, WorldSize * 2f );
 		var cameraPosition = camera.WorldPosition.Flatten();
 		var cameraSize = new Vector2( camera.OrthographicHeight * Screen.Aspect, camera.OrthographicHeight );
 		var cameraRect = new Rect( cameraPosition - cameraSize * 0.5f, cameraSize );

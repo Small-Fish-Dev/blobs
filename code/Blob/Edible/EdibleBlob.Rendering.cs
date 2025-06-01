@@ -31,8 +31,8 @@ partial class EdibleBlob
 				return;
 
 			// Draw the blob circle.
-			var center = Blob.WorldPosition + Vector3.Up * Blob.WorldSize;
 			var bounds = GameManager.Bounds;
+			var center = Blob.WorldPosition.Clamp( bounds.Mins, bounds.Maxs ) + Vector3.Up * Blob.WorldSize;
 			var radius = Blob.SmoothSize;
 			var time = TimeOffset / (radius * 0.01f + 1f);
 

@@ -7,9 +7,9 @@ partial class BlobController
 	public const float FEED_FORCE = 3.2f;
 
 	[Rpc.Host( NetFlags.Reliable | NetFlags.OwnerOnly | NetFlags.SendImmediate )]
-	public void TryFeed( MoveBlob[] children )
+	public void TryFeed( List<MoveBlob> children )
 	{
-		if ( children is not { Length: > 0 } )
+		if ( children is not { Count: > 0 } )
 			return;
 
 		void CreateBlob( Blob parent, int size )

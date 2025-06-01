@@ -44,6 +44,10 @@
         "__type": "Blobs.MoveBlob",
         "__guid": "654d2781-fbd9-47db-9ab0-b09039abe550",
         "__enabled": true,
+        "LifeTime": {
+          "Absolute": 0,
+          "Relative": 10116.414
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,

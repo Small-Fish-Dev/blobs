@@ -7,8 +7,8 @@ partial class BlobController
 	public const int MAX_SIBLINGS = 12;
 	public const float SPLIT_FRACTION = 0.4f;
 
-	public int TotalSize => ValidSiblings.Sum( sibling => sibling.Size );
-	public IEnumerable<MoveBlob> ValidSiblings => Siblings.Where( blob => blob.IsValid() );
+	public int TotalSize => ValidSiblings.Sum( sibling => sibling?.Size ?? 0 );
+	public IEnumerable<MoveBlob> ValidSiblings => [..Siblings.Where( blob => blob.IsValid() ), Base];
 
 	[Sync( SyncFlags.FromHost )]
 	public NetList<MoveBlob> Siblings { get; set; } = new();
@@ -20,9 +20,9 @@ partial class BlobController
 	}
 
 	[Rpc.Host( NetFlags.Reliable | NetFlags.OwnerOnly | NetFlags.SendImmediate )]
-	public void TrySplit( MoveBlob[] children )
+	public void TrySplit( List<MoveBlob> children )
 	{
-		if ( children is not { Length: > 0 } || ValidSiblings.Count() >= MAX_SIBLINGS )
+		if ( children is not { Count: > 0 } || ValidSiblings.Count() >= MAX_SIBLINGS )
 			return;
 
 		void CreateBlob( Blob parent, int size )
@@ -43,9 +43,6 @@ partial class BlobController
 		using ( Scene.Push() )
 			foreach ( var child in children )
 			{
-				if ( !child.IsValid() )
-					continue;
-
 				if ( child.Controller != this )
 					continue;
 
@@ -55,7 +52,7 @@ partial class BlobController
 				if ( ValidSiblings.Count() >= MAX_SIBLINGS )
 					break;
 
-				var size = (int)(child.Size * SPLIT_FRACTION + 0.5f);
+				var size = (int)(child.Size * SPLIT_FRACTION);
 				child.Size -= size;
 				child.LifeTime = 0f;
 
