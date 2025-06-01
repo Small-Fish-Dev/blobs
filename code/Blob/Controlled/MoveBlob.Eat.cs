@@ -63,6 +63,8 @@ partial class MoveBlob
 			var bestCandidate = controller.ValidSiblings.FirstOrDefault( sibling => sibling.IsValid() && sibling != moveBlob );
 			if ( bestCandidate.IsValid() )
 			{
+				Log.Error( $"Moving to {bestCandidate} from {moveBlob}" );
+
 				Size += blob.Size;
 
 				controller.Transform.ClearInterpolation();

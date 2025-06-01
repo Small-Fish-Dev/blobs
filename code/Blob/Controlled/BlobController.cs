@@ -74,7 +74,9 @@ public sealed partial class BlobController
 		dir.y = -dir.y;
 
 		MouseDirection = dir;
-		WishDirection = (dir / center * 8).Clamp( -1f, 1f );
+
+		var len = (dir / center * 8).Clamp( -1f, 1f );
+		WishDirection = dir.Normal.Abs() * len;
 
 		// Split if possible.
 		if ( Input.Pressed( "Split" ) && _sinceFed > 0.1f )
