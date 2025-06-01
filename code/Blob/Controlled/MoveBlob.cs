@@ -13,7 +13,7 @@ public sealed partial class MoveBlob
 
 	public float Speed => MathX.Lerp( SPEED_SMALL, SPEED_LARGE, (Size * 8f) / (float)MAX_SIZE );
 	public Vector2 Velocity { get; set; }
-	public TimeSince LifeTime { get; private set; }
+	public TimeSince LifeTime { get; set; }
 	public bool Reconnecting => Controller.Main != this && Controller.Main.IsValid() && LifeTime > RECONNECTION_COOLDOWN;
 
 	protected override void OnStart()

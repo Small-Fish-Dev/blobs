@@ -41,7 +41,8 @@ partial class MoveBlob
 	public void Kill()
 	{
 		Assert.True( Networking.IsHost, "Tried to kill blob on non-host." );
-		GameObject.Destroy();
+
+		DestroyGameObject();
 	}
 
 	[Rpc.Host( NetFlags.Reliable | NetFlags.OwnerOnly | NetFlags.SendImmediate )]
@@ -62,7 +63,9 @@ partial class MoveBlob
 			other.Size = Size + other.Size;
 			other.WorldPosition = WorldPosition;
 			other.Transform.ClearInterpolation();
+			other.LifeTime = 0f;
 
+			LifeTime = 0f;
 			Kill();
 
 			return;

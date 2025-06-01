@@ -1,0 +1,59 @@
+﻿@namespace Blobs.UI
+@inherits Panel
+
+<root>
+	<div class="title group">
+		<p class="name">name</p>
+		<p>score</p>
+	</div>
+
+	@for ( int i = 0; i < SCORE_COUNT; i++ )
+	{
+		var entry = _scores?.ElementAtOrDefault( i );
+		if ( entry?.Client == default )
+			continue;
+
+		<div class="entry group @(entry?.Client == Client.Local ? "self" : "")">
+			<div>
+				@if ( i < 3 )
+				{
+					<IconPanel>military_tech</IconPanel>
+				}
+
+				<p>@entry?.Client?.DisplayName</p>
+			</div>
+
+			<p>@($"{(entry?.Score ?? 0):n0}")</p>
+		</div>
+	}
+</root>
+
+@code {
+	private const float UPDATE_COOLDOWN = 1f;
+	private const int SCORE_COUNT = 8;
+
+	private (Client Client, int Score)[] _scores;
+	private TimeSince _lastUpdated = UPDATE_COOLDOWN;
+
+	public void Update()
+	{
+		var top = Client.All
+			.OrderByDescending( client => client.IsValid() && client.Pawn is BlobController blob && blob.IsValid() ? blob.TotalSize : 0f )
+			.Select( client => (client, (client?.Pawn as BlobController)?.TotalSize ?? 0) )
+			.ToArray();
+
+		_scores ??= new (Client, int)[SCORE_COUNT];
+		for ( int i = 0; i < SCORE_COUNT; i++ )
+			_scores[i] = top?.ElementAtOrDefault( i ) ?? (default, default);
+	}
+
+	public override void Tick()
+	{
+		if ( _lastUpdated < UPDATE_COOLDOWN )
+			return;
+
+		_lastUpdated = 0f;
+		Update();
+		StateHasChanged();
+	}
+}

@@ -1,0 +1,58 @@
+$gold: #EFBF04;
+$silver: #C0C0C0;
+$bronze: #CE8946;
+
+Leaderboard {
+    position: absolute;
+    right: 50px;
+    top: 50px;
+    padding: 25px 50px;
+    background-color: rgba(black, 0.9);
+    border-radius: 5px;
+    min-width: 300px;
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: none;
+
+    > .group {
+        flex-direction: row;
+        gap: 50px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    > .title {
+        border-bottom: 3px darken(white, 0.2);
+        margin-bottom: 10px;
+    }
+
+    > .entry {
+        position: relative;
+
+        IconPanel {
+            position: absolute;
+            right: 100%;
+            font-size: 24px;
+            top: 6px;
+            margin-right: 5px;
+        }
+
+        &.self {
+            p {
+                filter: brightness(150%);
+            }
+        }
+
+        &:nth-child(2) {
+            color: $gold;
+        }
+
+        &:nth-child(3) {
+            color: $silver;
+        }
+
+        &:nth-child(4) {
+            color: $bronze;
+        }
+    }
+}

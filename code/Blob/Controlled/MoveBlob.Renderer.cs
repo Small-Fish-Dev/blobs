@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-
-namespace Blobs;
+﻿namespace Blobs;
 
 partial class MoveBlob
 {

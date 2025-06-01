@@ -68,6 +68,34 @@
             },
             "compiled": "textures/generated/imagefile/784190d7c11e5970.vtex"
           }
+        },
+        {
+          "__type": "Sandbox.ScreenPanel",
+          "__guid": "b61a2d20-f35d-4ed5-9206-86d80fa9a6c2",
+          "__enabled": true,
+          "AutoScreenScale": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Opacity": 1,
+          "Scale": 1,
+          "ScaleStrategy": "ConsistentHeight",
+          "TargetCamera": null,
+          "ZIndex": 100
+        },
+        {
+          "__type": "Blobs.UI.UIComponent",
+          "__guid": "28819f93-a44f-4516-82d7-24bdfb3ad629",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []

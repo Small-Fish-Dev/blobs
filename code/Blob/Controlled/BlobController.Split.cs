@@ -54,6 +54,7 @@ partial class BlobController
 
 				var size = (int)(child.Size * SPLIT_FRACTION + 0.5f);
 				child.Size -= size;
+				child.LifeTime = 0f;
 
 				CreateBlob( child, size );
 			}	
