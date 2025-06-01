@@ -10,6 +10,9 @@ public sealed class GameManager
 	public PrefabFile DefaultPawn { get; set; }
 
 	[Property, Category( "Settings" )]
+	public ScreenPanel ScreenPanel { get; set; }
+
+	[Property, Category( "Settings" )]
 	public Vector2 Mins { get; set; } = new Vector2( -100, -100 );
 
 	[Property, Category( "Settings" )]
@@ -47,9 +50,32 @@ public sealed class GameManager
 		var pawn = client.CreatePawn( DefaultPawn?.ResourcePath );
 	}
 
+	protected override void OnUpdate()
+	{
+		base.OnUpdate();
+
+		var camera = Scene.Camera;
+		if ( camera.IsValid() && ScreenPanel.IsValid() )
+			ScreenPanel.TargetCamera = camera.IsMainCamera ? null : camera;
+	}
+
 	protected override void DrawGizmos()
 	{
 		var bbox = new BBox( new Vector3( Mins ), new Vector3( Maxs ) );
 		Gizmo.Draw.LineBBox( bbox );
+	}
+
+	[Rpc.Host( NetFlags.SendImmediate | NetFlags.Reliable )]
+	public static void Respawn()
+	{
+		var callerId = Rpc.CallerId;
+		var client = Client.All.FirstOrDefault( client => client.ConnectionId == callerId );
+		if ( !client.IsValid() )
+			return;
+
+		if ( client.Pawn.IsValid() )
+			return;
+
+		var pawn = client.CreatePawn( Instance?.DefaultPawn?.ResourcePath );
 	}
 }

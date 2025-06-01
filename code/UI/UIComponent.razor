@@ -3,8 +3,22 @@
 
 <root>
 	<Leaderboard />
-	<Score />
+
+	@if (Alive)
+	{
+		<Score />
+	}
+	else
+	{
+		<Respawn />
+	}
 </root>
 
 @code {
+	private bool Alive => Client.Local.IsValid() && Client.Local.Pawn is BlobController blob && blob.IsValid();
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Alive );
+	}
 }

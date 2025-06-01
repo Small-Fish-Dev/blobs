@@ -21,14 +21,20 @@
           "__guid": "d7cf65d8-f162-4a94-a278-c7bdd49f80e4",
           "__enabled": true,
           "DefaultPawn": "prefabs/blob.prefab",
-          "Maxs": "250,250",
-          "Mins": "-250,-250",
+          "Maxs": "350,250",
+          "Mins": "-350,-250",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "ScreenPanel": {
+            "_type": "component",
+            "component_id": "b61a2d20-f35d-4ed5-9206-86d80fa9a6c2",
+            "go": "0e835fe2-9731-4bc2-a50b-3c6e801a8c3e",
+            "component_type": "ScreenPanel"
+          }
         },
         {
           "__type": "Blobs.Ground",
@@ -73,6 +79,10 @@
           "__type": "Blobs.FoodSpawner",
           "__guid": "1b165f4e-bdda-4974-99fd-a7aa3c26677f",
           "__enabled": true,
+          "FoodPrefab": {
+            "_type": "gameobject",
+            "prefab": "prefabs/food.prefab"
+          },
           "FoodSizeRange": "4 15",
           "MaxFood": 500,
           "OnComponentDestroy": null,
@@ -80,7 +90,8 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "SpawnCooldown": 1
         },
         {
           "__type": "Sandbox.ScreenPanel",
@@ -111,7 +122,51 @@
           "OnComponentUpdate": null
         }
       ],
-      "Children": []
+      "Children": [
+        {
+          "__guid": "7fe1f4e6-ab93-48e2-b992-2c773873e17a",
+          "__version": 1,
+          "Flags": 0,
+          "Name": "Default Camera",
+          "Position": "0,0,9000",
+          "Rotation": "-0.5,0.5,0.5,0.5",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.CameraComponent",
+              "__guid": "5990e606-856e-4936-aae0-aea1a380d89f",
+              "__enabled": true,
+              "BackgroundColor": "0.33333,0.46275,0.52157,1",
+              "ClearFlags": "All",
+              "FieldOfView": 60,
+              "FovAxis": "Horizontal",
+              "IsMainCamera": false,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "Orthographic": true,
+              "OrthographicHeight": 300,
+              "Priority": 1,
+              "RenderExcludeTags": "",
+              "RenderTags": "",
+              "TargetEye": "None",
+              "Viewport": "0,0,1,1",
+              "ZFar": 10000,
+              "ZNear": 10
+            }
+          ],
+          "Children": []
+        }
+      ]
     }
   ],
   "SceneProperties": {

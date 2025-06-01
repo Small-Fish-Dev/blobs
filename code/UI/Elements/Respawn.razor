@@ -1,0 +1,17 @@
+@namespace Blobs.UI
+@inherits Panel
+
+<root>
+	<div class="title">blobs o.O</div>
+	<div class="respawn button" @onclick=@(() => GameManager.Respawn())>
+		respawn
+	</div>
+
+	<div class="quit button" @onclick=@(() => Game.Disconnect())>
+		quit
+	</div>
+</root>
+
+@code {
+
+}

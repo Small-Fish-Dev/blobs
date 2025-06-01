@@ -9,6 +9,15 @@ Score {
     color: white;
     flex-direction: column;
     gap: 10px;
+    transition: bottom 0.25s ease;
+
+    &:intro {
+        bottom: -200px;
+    }
+
+    &:outro {
+        bottom: -200px;
+    }
 
     > .gray {
         color: darken(white, 0.2);

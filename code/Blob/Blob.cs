@@ -16,6 +16,9 @@ public partial class Blob
 	}
 	private int _size = 100;
 
+	[Property]
+	public bool LerpStart { get; set; } = false;
+
 	public float WorldSize => MathF.Sqrt( Size * 0.1f );
 	public float SmoothSize { get; set; }
 	public SceneObject SceneObject { get; protected set; }
@@ -28,7 +31,9 @@ public partial class Blob
 	{
 		base.OnStart();
 		LifeTime = 0f;
-		SmoothSize = WorldSize;
+
+		if ( !LerpStart )
+			SmoothSize = WorldSize;
 	}
 
 	protected override void OnDisabled()

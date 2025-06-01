@@ -7,7 +7,7 @@ partial class BlobController
 	public const int MAX_SIBLINGS = 12;
 	public const float SPLIT_FRACTION = 0.4f;
 
-	public int TotalSize => ValidSiblings.Sum( sibling => sibling?.Size ?? 0 );
+	public int TotalSize => ValidSiblings.Sum( sibling => sibling.IsValid() ? sibling.Size : 0 );
 	public IEnumerable<MoveBlob> ValidSiblings => [..Siblings.Where( blob => blob.IsValid() ), Base];
 
 	[Sync( SyncFlags.FromHost )]
