@@ -39,7 +39,7 @@
 	{
 		var top = Client.All
 			.OrderByDescending( client => client.IsValid() && client.Pawn is BlobController blob && blob.IsValid() ? blob.TotalSize : 0f )
-			.Select( client => (client, (client?.Pawn as BlobController)?.TotalSize ?? 0) )
+			.Select( client => client.IsValid() ? (client, (client?.Pawn as BlobController)?.TotalSize ?? 0) : default )
 			.ToArray();
 
 		_scores ??= new (Client, int)[SCORE_COUNT];

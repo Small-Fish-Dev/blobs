@@ -64,6 +64,13 @@ public partial class Blob
 		return cameraRect.IsInside( circleRect );
 	}
 
+	public void ClampToBounds()
+	{
+		var bounds = GameManager.Bounds;
+		var offset = WorldSize * 0.25f;
+		WorldPosition = WorldPosition.Clamp( bounds.Mins + offset, bounds.Maxs - offset );
+	}
+
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
@@ -71,8 +78,8 @@ public partial class Blob
 		if ( IsProxy )
 			return;
 
-		var bounds = GameManager.Bounds;
-		WorldPosition = (WorldPosition + Velocity.Extrude() * Time.Delta).Clamp( bounds.Mins, bounds.Maxs );
+		WorldPosition += Velocity.Extrude() * Time.Delta;
+		ClampToBounds();
 
 		// Velocity fall-off..
 		Velocity *= 0.975f;
@@ -80,6 +87,7 @@ public partial class Blob
 			Velocity = Vector2.Zero;
 
 		// Bounce off of bounds.
+		var bounds = GameManager.Bounds;
 		var velocity = Velocity;
 		var nextPosition = WorldPosition + Velocity.Extrude() * Time.Delta;
 		if ( nextPosition.x <= bounds.Mins.x || nextPosition.x >= bounds.Maxs.x )

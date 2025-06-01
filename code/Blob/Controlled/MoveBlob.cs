@@ -95,7 +95,7 @@ public sealed partial class MoveBlob
 		TryEatBlobs();
 
 		// Move the blob.
-		var bounds = GameManager.Bounds;
-		WorldPosition = (WorldPosition + Controller.WishDirection.Extrude() * Speed * Time.Delta).WithZ( 0f ).Clamp( bounds.Mins, bounds.Maxs );
+		WorldPosition += Controller.WishDirection.Extrude() * Speed * Time.Delta;
+		ClampToBounds();
 	}
 }

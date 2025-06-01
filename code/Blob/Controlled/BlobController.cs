@@ -57,7 +57,7 @@ public sealed partial class BlobController
 
 		// Interpolate some values, "zoom out" our camera.
 		var before = Main.SmoothSize;
-		Zoom = MathX.Clamp( Zoom - Input.MouseWheel.y * 100f, ZoomRange.Min, ZoomRange.Max );
+		Zoom = MathX.Clamp( Zoom - Input.MouseWheel.y * 250f, ZoomRange.Min, ZoomRange.Max );
 
 		SmoothZoom = MathX.Lerp( SmoothZoom, Zoom, 10f * RealTime.Delta );
 
@@ -84,5 +84,18 @@ public sealed partial class BlobController
 		// Feed if possible.
 		if ( Input.Pressed( "Feed" ) )
 			TryFeed( ValidSiblings.ToArray() );
+	}
+
+	[ConCmd( "give_feed" )]
+	private static void DebugGiveFeedCommand( int size )
+	{
+		if ( Client.Local?.Pawn is not BlobController controller )
+			return;
+
+		var main = controller.Main;
+		if ( !main.IsValid() )
+			return;
+
+		main.Size += size;
 	}
 }
