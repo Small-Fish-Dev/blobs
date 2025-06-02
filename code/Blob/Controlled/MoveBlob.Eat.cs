@@ -4,7 +4,7 @@ partial class MoveBlob
 {
 	const float EAT_MIN = 50f; // A minimum size threshold for eating another blob.
 	const float EAT_THRESHOLD = 0.15f; // How much bigger we need to be to eat a blob.
-	const float EAT_RADIUS = 0.8f; // How much we need to be inside of the blob to eat it.
+	const float EAT_RADIUS = 0.7f; // How much we need to be inside of the blob to eat it.
 
 	const float FEED_EAT_DELAY = 4f;
 

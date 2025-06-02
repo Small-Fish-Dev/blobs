@@ -1,0 +1,21 @@
+InputButton {
+    flex-direction: row-reverse;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 24px;
+    transition: filter 0.1s ease, transform 0.1s ease;
+
+    > .button {
+        border-radius: 5px;
+        padding: 5px 15px;
+        background-color: darken(white, 0.8);
+        color: white;
+    }
+
+    &.down {
+        filter: brightness(110%);
+        transform: scale(1.05);
+    }
+}
