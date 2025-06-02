@@ -2,8 +2,6 @@
 @inherits PanelComponent
 
 <root>
-	<Leaderboard />
-
 	@if (Alive)
 	{
 		<Score />
@@ -12,6 +10,8 @@
 	{
 		<Respawn />
 	}
+
+	<Leaderboard />
 </root>
 
 @code {

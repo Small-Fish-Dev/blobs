@@ -4,7 +4,7 @@ partial class MoveBlob
 {
 	const float EAT_MIN = 50f; // A minimum size threshold for eating another blob.
 	const float EAT_THRESHOLD = 0.15f; // How much bigger we need to be to eat a blob.
-	const float EAT_RADIUS = 0.9f; // How much we need to be inside of the blob to eat it.
+	const float EAT_RADIUS = 0.8f; // How much we need to be inside of the blob to eat it.
 
 	const float FEED_EAT_DELAY = 4f;
 
@@ -33,7 +33,7 @@ partial class MoveBlob
 		// We shoot out a edible blob from this blob.
 		else if ( blob is EdibleBlob edible )
 		{
-			if ( edible.Source == this && edible.LifeTime < FEED_EAT_DELAY )
+			if ( edible.Source == this && edible.Life < FEED_EAT_DELAY )
 				return false;
 		}
 
@@ -42,7 +42,7 @@ partial class MoveBlob
 		var position = WorldPosition.Flatten();
 		var distance = otherPosition.Distance( position );
 
-		if ( distance > WorldSize * EAT_RADIUS ) return false;
+		if ( distance > WorldSize - blob.WorldSize * EAT_RADIUS ) return false;
 
 		// We can eat the blob.
 		return true;
@@ -53,31 +53,7 @@ partial class MoveBlob
 	{
 		if ( !blob.IsValid() ) return;
 		if ( !CanEat( blob ) ) return;
-
-		// Our controlled blob was eaten, replace controlled blob with another.
-		if ( blob is MoveBlob moveBlob 
-		  && moveBlob.Controller is { IsValid: true } controller 
-		  && controller.Base == moveBlob )
-		{
-			// Pivot to any possible blob if we can.
-			var bestCandidate = controller.ValidSiblings.FirstOrDefault( sibling => sibling.IsValid() && sibling != moveBlob );
-			if ( bestCandidate.IsValid() )
-			{
-				Log.Error( $"Moving to {bestCandidate} from {moveBlob}" );
-
-				Size += blob.Size;
-
-				controller.Transform.ClearInterpolation();
-				controller.WorldPosition = bestCandidate.WorldPosition;
-
-				moveBlob.Size = bestCandidate.Size;
-				moveBlob.SmoothSize = bestCandidate.SmoothSize;
-
-				bestCandidate.Kill();
-
-				return;
-			}
-		}
+		if ( !Networking.IsHost ) return;
 
 		Size += blob.Size;
 		blob.Kill();

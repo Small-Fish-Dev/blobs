@@ -3,7 +3,7 @@
     "__guid": "dd8d6b42-126e-4324-bb73-1a4da22b985d",
     "__version": 1,
     "Flags": 0,
-    "Name": "blob",
+    "Name": "blob_controller",
     "Position": "0,0,0",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
@@ -18,12 +18,6 @@
         "__type": "Blobs.BlobController",
         "__guid": "de3bd1d7-942c-42fe-ad97-d3919a5d91de",
         "__enabled": true,
-        "Base": {
-          "_type": "component",
-          "component_id": "654d2781-fbd9-47db-9ab0-b09039abe550",
-          "go": "dd8d6b42-126e-4324-bb73-1a4da22b985d",
-          "component_type": "MoveBlob"
-        },
         "Camera": {
           "_type": "component",
           "component_id": "723c6b4a-8586-403f-9f2e-1717c127f1c9",
@@ -39,22 +33,6 @@
         "OnComponentUpdate": null,
         "ZoomRange": "800 3800",
         "ZoomScale": 2.85
-      },
-      {
-        "__type": "Blobs.MoveBlob",
-        "__guid": "654d2781-fbd9-47db-9ab0-b09039abe550",
-        "__enabled": true,
-        "LifeTime": {
-          "Absolute": 0,
-          "Relative": 10116.414
-        },
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Size": 100
       }
     ],
     "Children": [

@@ -63,12 +63,13 @@ public sealed class Client
 		{
 			obj.Destroy();
 			throw new Exception( $"Prefab \"{path}\" did not contain a Pawn component at root." );
-		}
+		}		
 
 		if ( setupNetworking )
 			obj.SetupNetworking( Connection, OwnerTransfer.Fixed, NetworkOrphaned.Destroy );
-
+		
 		Pawn = pawn;
+		pawn.OnHostSpawned();
 
 		return pawn;
 	}

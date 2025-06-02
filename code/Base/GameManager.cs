@@ -48,6 +48,8 @@ public sealed class GameManager
 
 		var client = Client.Create( connection );
 		var pawn = client.CreatePawn( DefaultPawn?.ResourcePath );
+
+		connection.CanSpawnObjects = false;
 	}
 
 	protected override void OnUpdate()

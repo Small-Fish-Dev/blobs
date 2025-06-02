@@ -8,8 +8,11 @@ public sealed partial class MoveBlob
 	public const float SPEED_SMALL = 6f;
 	public const float SPEED_LARGE = 2f;
 
-	[Sync]
+	[Sync( SyncFlags.FromHost )]
 	public BlobController Controller { get; set; }
+
+	[Sync( SyncFlags.FromHost )]
+	public TimeSince LifeTime { get; set; } = 0f;
 
 	public float Speed => MathX.Lerp( SPEED_SMALL, SPEED_LARGE, (Size * 8f) / (float)MAX_SIZE ) + (Controller?.Main != this ? 0.5f : 0f);
 	public bool Reconnecting => Controller.Main != this && Controller.Main.IsValid() && LifeTime > RECONNECTION_COOLDOWN;

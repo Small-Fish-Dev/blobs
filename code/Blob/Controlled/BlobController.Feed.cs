@@ -18,6 +18,7 @@ partial class BlobController
 
 			var blob = obj.Components.Create<EdibleBlob>();
 			blob.Size = size;
+			blob.LerpStart = true;
 			blob.WorldPosition = parent.WorldPosition + (MouseNormal * (parent.WorldSize - blob.WorldSize)).Extrude();
 			blob.Velocity = (parent.WorldSize + 1f) * MouseNormal * FEED_FORCE;
 			blob.Source = parent;

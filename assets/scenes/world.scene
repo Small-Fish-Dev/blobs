@@ -20,7 +20,7 @@
           "__type": "Blobs.GameManager",
           "__guid": "d7cf65d8-f162-4a94-a278-c7bdd49f80e4",
           "__enabled": true,
-          "DefaultPawn": "prefabs/blob.prefab",
+          "DefaultPawn": "prefabs/blob_controller.prefab",
           "Maxs": "350,250",
           "Mins": "-350,-250",
           "OnComponentDestroy": null,

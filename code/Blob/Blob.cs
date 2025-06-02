@@ -17,7 +17,7 @@ public partial class Blob
 	private int _size = 100;
 
 	[Property]
-	public bool LerpStart { get; set; } = false;
+	public bool LerpStart { get; set; } = true;
 
 	public float WorldSize => MathF.Sqrt( Size * 0.1f );
 	public float SmoothSize { get; set; }
@@ -25,12 +25,12 @@ public partial class Blob
 	public Vector2 Velocity { get; set; }
 
 	[Property, Hide]
-	public TimeSince LifeTime { get; set; }
+	public TimeSince Life { get; set; }
 
 	protected override void OnStart()
 	{
 		base.OnStart();
-		LifeTime = 0f;
+		Life = 0f;
 
 		if ( !LerpStart )
 			SmoothSize = WorldSize;
@@ -75,7 +75,7 @@ public partial class Blob
 	{
 		var bounds = GameManager.Bounds;
 		var offset = WorldSize * 0.25f;
-		WorldPosition = WorldPosition.Clamp( bounds.Mins + offset, bounds.Maxs - offset );
+		WorldPosition = WorldPosition.Clamp( bounds.Mins + offset, bounds.Maxs - offset ).WithZ( 0f );
 	}
 
 	protected override void OnFixedUpdate()

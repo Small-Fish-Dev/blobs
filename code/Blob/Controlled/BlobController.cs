@@ -6,10 +6,7 @@ public sealed partial class BlobController
 	[Property, Category( "Components" )]
 	public CameraComponent Camera { get; set; }
 
-	public MoveBlob Main => ValidSiblings.MaxBy( blob => blob?.SmoothSize ?? 0 ) ?? Base;
-
-	[Property, Category( "Components" )]
-	public MoveBlob Base { get; set; }
+	public MoveBlob Main => ValidSiblings.MaxBy( blob => blob?.SmoothSize ?? 0 );
 
 	[Property, Category( "Settings" )]
 	public RangedFloat ZoomRange { get; set; } = new RangedFloat( 250f, 750f );
@@ -37,9 +34,6 @@ public sealed partial class BlobController
 		if ( Camera.IsValid() )
 			Camera.Enabled = !IsProxy;
 
-		if ( Base.IsValid() )
-			Base.Controller = this;
-
 		if ( !IsProxy )
 			return;
 
@@ -47,12 +41,44 @@ public sealed partial class BlobController
 		SmoothZoom = Zoom;
 	}
 
+	public override void OnHostSpawned()
+	{
+		if ( !Networking.IsHost )
+			return;
+
+		using ( Scene.Push() )
+		{
+			var bounds = GameManager.Bounds;
+			var obj = new GameObject( true, "child blob" );
+
+			var blob = obj.Components.Create<MoveBlob>();
+			blob.Size = 100;
+			blob.WorldPosition = new Vector3(
+				Game.Random.Float( bounds.Mins.x, bounds.Maxs.x ),
+				Game.Random.Float( bounds.Mins.y, bounds.Maxs.y ),
+				0f
+			);
+			blob.Controller = this;
+			blob.ClampToBounds();
+
+			obj.SetupNetworking( Client.Connection, OwnerTransfer.Fixed, NetworkOrphaned.Destroy );
+
+			Siblings.Add( blob );
+		}
+	}
+
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();
 
-		if ( !Main.IsValid() || IsProxy )
+		if ( IsProxy )
 			return;
+
+		if ( !Main.IsValid() )
+		{
+			DestroyGameObject();
+			return;
+		}
 
 		// Interpolate some values, "zoom out" our camera.
 		var before = Main.SmoothSize;
@@ -63,19 +89,28 @@ public sealed partial class BlobController
 		if ( Camera.IsValid() )
 		{
 			var pos = Camera.WorldPosition.z;
-			Camera.OrthographicHeight = Main.SmoothSize * 2f + SmoothZoom / ZoomRange.Max * before * ZoomScale + DefaultDistance;
-			Camera.WorldPosition = Vector3.Lerp( Camera.WorldPosition, Main.WorldPosition.WithZ( pos ), 10f * Time.Delta );
+			var center = Vector3.Zero;
+			var count = 0;
+			foreach ( var sibling in ValidSiblings )
+			{
+				center += sibling.WorldPosition;
+				count++;
+			}
+
+			var targetHeight = Main.SmoothSize * 2f + SmoothZoom / ZoomRange.Max * before * ZoomScale + DefaultDistance * (count * 0.5f);
+			Camera.OrthographicHeight = MathX.Lerp( Camera.OrthographicHeight, targetHeight, 10f * Time.Delta );
+			Camera.WorldPosition = Vector3.Lerp( Camera.WorldPosition, (center / Math.Max( count, 1 )).WithZ( pos ), 10f * Time.Delta );
 		}
 
 		// Wish direction is from mouse, centered on screen.
-		var center = Screen.Size * 0.5f;
+		var screenCenter = Screen.Size * 0.5f;
 		var mouse = Mouse.Position;
-		var dir = mouse - center;
+		var dir = mouse - screenCenter;
 		dir.y = -dir.y;
 
 		MouseDirection = dir;
 
-		var len = (dir / center * 8).Clamp( -1f, 1f );
+		var len = (dir / screenCenter * 8).Clamp( -1f, 1f );
 		WishDirection = dir.Normal.Abs() * len;
 
 		// Split if possible.
@@ -96,6 +131,9 @@ public sealed partial class BlobController
 	[Rpc.Host]
 	private void GiveFeed( int size )
 	{
+		if ( !Main.IsValid() )
+			return;
+
 		Main.Size += size;
 	}
 
