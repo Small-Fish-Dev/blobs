@@ -58,8 +58,8 @@ PS
 		const float3 VOID_COLOR = 0.25f;
         const float2 SCALE = float2(24.f, 24.f);
 
-		float2 mins = float2(g_flWorldBounds.x, g_flWorldBounds.y);
-		float2 maxs = float2(g_flWorldBounds.z, g_flWorldBounds.w);
+		float2 mins = g_flWorldBounds.xy;
+		float2 maxs = g_flWorldBounds.zw;
 
         float2 screenCenter = i.vTextureCoords.xy - 0.5;
         float2 worldSize = float2(g_flWorldScale, g_flWorldScale) * g_flScreenAspect;

@@ -14,7 +14,6 @@ COMMON
 	#include "common/shared.hlsl"
 }
 
-
 struct VertexInput
 {
 	#include "common/vertexinput.hlsl"
@@ -29,9 +28,29 @@ VS
 {
 	#include "common/vertex.hlsl"
 
+	float g_flBlobRadius < Attribute( "BlobRadius" ); Default( 1.f ); >;
+ 	float4 g_flWorldBounds < Attribute( "WorldBounds" ); >;
+
 	PixelInput MainVs( VertexInput i )
 	{
+		float offset = (i.vPositionOs.x + i.vPositionOs.y) * 32.f;	
+		float scale = g_flBlobRadius * 0.005f;
+		float2 wave = float2(
+			(0.02f + scale) * sin( offset * 4.f + g_flTime * 5.f + g_flBlobRadius * 32.f), 
+			(0.02f + scale) * cos( offset * 2.f + g_flTime * 5.f + g_flBlobRadius * 32.f)
+		);
+
+		float2 mins = g_flWorldBounds.xy;
+		float2 maxs = g_flWorldBounds.zw;
+
+		i.vPositionOs.xy *= g_flBlobRadius;
+		i.vPositionOs.xy += wave.xy;
+
 		PixelInput o = ProcessVertex( i );
+
+		o.vPositionWs.xy = min(max(o.vPositionWs.xy, mins.xy), maxs.xy);
+		o.vPositionPs.xyzw = Position3WsToPs( o.vPositionWs.xyz );
+
 		return FinalizeVertex( o );
 	}
 }
@@ -70,7 +89,7 @@ PS
 			return float4( result, 1.f );
 		#else
 			const float3 OUTLINE = float3(0, 0, 0);
-			float3 result = avatarColor;
+			float3 result = avatarColor.rgb;
 			result = lerp(result, OUTLINE, ceil(dist - outlineSize));
 			result = lerp(result, (result + OUTLINE) * 0.5f, ceil(dist - outlineSizeInner));
 

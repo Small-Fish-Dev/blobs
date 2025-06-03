@@ -36,6 +36,14 @@ public partial class Blob
 			SmoothSize = WorldSize;
 	}
 
+	protected override void OnEnabled()
+	{
+		base.OnEnabled();
+
+		if ( !SceneObject.IsValid() )
+			SceneObject = new BlobObject( Scene?.SceneWorld );
+	}
+
 	protected override void OnDisabled()
 	{
 		base.OnDisabled();
@@ -47,6 +55,21 @@ public partial class Blob
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();
+
+		if ( SceneObject.IsValid() )
+		{
+			SceneObject.RenderingEnabled = this is MoveBlob moveBlob 
+				? moveBlob.Controller == Client.Local?.Pawn
+				: VisibleToSelf();
+
+			if ( SceneObject.RenderingEnabled )
+			{
+				var bounds = GameManager.Bounds;
+				SceneObject.Attributes?.Set( "WorldBounds", new Vector4( bounds.Mins.x, bounds.Mins.y, bounds.Maxs.x, bounds.Maxs.y ) );
+				SceneObject.Attributes?.Set( "BlobRadius", SmoothSize );
+				SceneObject.Position = WorldPosition.WithZ( WorldSize );
+			}
+		}
 
 		SmoothSize = MathX.Lerp( SmoothSize, WorldSize, 10f * RealTime.Delta );
 	}

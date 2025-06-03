@@ -2,9 +2,14 @@
 @inherits PanelComponent
 
 <root>
-	@if (Alive)
+	@if ( Alive )
 	{
 		<Score />
+
+		<div class="keybinds">
+			<InputButton Action="Split" Name="Split" />
+			<InputButton Action="Feed" Name="Feed" />
+		</div>
 	}
 	else
 	{
@@ -12,11 +17,6 @@
 	}
 
 	<Leaderboard />
-
-	<div class="keybinds">
-		<InputButton Action="Split" Name="Split" />
-		<InputButton Action="Feed" Name="Feed" />
-	</div>
 </root>
 
 @code {

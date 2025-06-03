@@ -17,14 +17,6 @@ public sealed partial class MoveBlob
 	public float Speed => MathX.Lerp( SPEED_SMALL, SPEED_LARGE, (Size * 8f) / (float)MAX_SIZE ) + (Controller?.Main != this ? 0.5f : 0f);
 	public bool Reconnecting => Controller.Main != this && Controller.Main.IsValid() && LifeTime > RECONNECTION_COOLDOWN;
 
-	protected override void OnStart()
-	{
-		base.OnStart();
-
-		if ( !SceneObject.IsValid() )
-			SceneObject = new Renderer( this, Scene?.SceneWorld );
-	}
-
 	protected override void OnDestroy()
 	{
 		base.OnDestroy();
@@ -81,6 +73,17 @@ public sealed partial class MoveBlob
 			if ( !CanEat( blob ) ) continue;
 
 			TryEat( blob );
+		}
+	}
+
+	protected override void OnUpdate()
+	{
+		base.OnUpdate();
+
+		if ( SceneObject.IsValid() && SceneObject.RenderingEnabled )
+		{
+			var steamId = Controller?.Client?.SteamId ?? default;
+			SceneObject.Attributes?.Set( "AvatarTexture", Texture.LoadAvatar( steamId ) );
 		}
 	}
 

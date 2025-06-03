@@ -16,9 +16,6 @@ public sealed partial class EdibleBlob
 
 		Color = Color.Random;
 		Count++;
-
-		if ( !SceneObject.IsValid() )
-			SceneObject = new Renderer( this, Scene?.SceneWorld );
 	}
 
 	protected override void OnDisabled()
@@ -26,5 +23,17 @@ public sealed partial class EdibleBlob
 		base.OnDisabled();
 
 		Count--;
+	}
+
+	protected override void OnUpdate()
+	{
+		base.OnUpdate();
+
+		if ( SceneObject.IsValid() && SceneObject.RenderingEnabled )
+		{
+			SceneObject.Attributes?.Set( "D_ISSOLID", true );
+			SceneObject.Attributes?.Set( "BlobColor", Color );
+			SceneObject.Attributes?.Set( "BlobOutlineSize", 0.25f );
+		}
 	}
 }
