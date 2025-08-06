@@ -43,6 +43,9 @@ partial class BlobController
 		using ( Scene.Push() )
 			foreach ( var child in children )
 			{
+				if ( !child.IsValid() )
+					continue;
+
 				if ( child.Controller != this )
 					continue;
 
