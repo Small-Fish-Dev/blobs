@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace Blobs;
+﻿namespace Blobs;
 
 partial class BlobController
 {

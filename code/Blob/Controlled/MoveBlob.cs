@@ -83,7 +83,7 @@ public sealed partial class MoveBlob
 		if ( SceneObject.IsValid() && SceneObject.RenderingEnabled )
 		{
 			var steamId = Controller?.Client?.SteamId ?? default;
-			SceneObject.Attributes?.Set( "AvatarTexture", Texture.LoadAvatar( steamId ) );
+			SceneObject.Attributes?.Set( "AvatarTexture", Texture.LoadAvatar( steamId, 128 ) );
 		}
 	}
 

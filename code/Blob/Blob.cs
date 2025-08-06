@@ -58,8 +58,8 @@ public partial class Blob
 
 		if ( SceneObject.IsValid() )
 		{
-			SceneObject.RenderingEnabled = this is MoveBlob moveBlob 
-				? moveBlob.Controller == Client.Local?.Pawn
+			SceneObject.RenderingEnabled = this is MoveBlob moveBlob && !moveBlob.IsProxy
+				? true
 				: VisibleToSelf();
 
 			if ( SceneObject.RenderingEnabled )

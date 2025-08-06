@@ -41,6 +41,19 @@ public sealed partial class BlobController
 		SmoothZoom = Zoom;
 	}
 
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		foreach ( var blob in Siblings )
+		{
+			if ( !blob.IsValid() )
+				return;
+
+			blob.DestroyGameObject();
+		}
+	}
+
 	public override void OnHostSpawned()
 	{
 		if ( !Networking.IsHost )
